@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SA Event Connect - South Africa's Premier Event Professional Platform</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #f97316, #dc2626, #eab308);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hover-lift {
+            transition: transform 0.2s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="app"></div>
+
+    <script>
+        // Event professionals data
+        const eventPeople = [
+            {
+                id: 1,
+                name: "Thabo 'Jazz Master' Mokwena",
+                category: "musicians",
+                service: "Professional Jazz Guitarist",
+                location: "johannesburg",
+                locationText: "Johannesburg, Gauteng",
+                rating: 4.9,
+                reviews: 47,
+                hourlyRate: "R850/hour",
+                image: "🎸",
+                available: true,
+                verified: true,
+                portfolio: ["Corporate Events", "Luxury Weddings", "Jazz Festivals", "Restaurant Gigs"],
+                phone: "+27 82 123 4567",
+                email: "thabo@jazzmaster.co.za",
+                bio: "Award-winning jazz guitarist with 12+ years experience. Performed at Sandton Convention Centre, Four Seasons Hotel, and Cape Town Jazz Festival. Specializing in smooth jazz for upscale events.",
+                experience: "12 years",
+                completedEvents: 180
+            },
+            {
+                id: 2,
+                name: "Nomsa Premium Events",
+                category: "organizers",
+                service: "Luxury Wedding & Event Planner",
+                location: "cape-town",
+                locationText: "Cape Town, Western Cape",
+                rating: 4.8,
+                reviews: 63,
+                hourlyRate: "R1,500/event",
+                image: "💍",
+                available: true,
+                verified: true,
+                portfolio: ["Celebrity Weddings", "Corporate Galas", "Product Launches", "Destination Weddings"],
+                phone: "+27 21 456 7890",
+                email: "info@nomsaevents.co.za",
+                bio: "Creating unforgettable moments for over 8 years. Specializing in luxury weddings and high-end corporate events. Featured in Wedding Magazine SA and Conde Nast.",
+                experience: "8 years",
+                completedEvents: 95
+            },
+            {
+                id: 3,
+                name: "DJ Kamo",
+                category: "djs",
+                service: "Professional Party & Wedding DJ",
+                location: "durban",
+                locationText: "Durban, KwaZulu-Natal",
+                rating: 4.7,
+                reviews: 89,
+                hourlyRate: "R750/hour",
+                image: "🎧",
+                available: false,
+                verified: true,
+                portfolio: ["Wedding Receptions", "Club Events", "Corporate Parties", "Festival Sets"],
+                phone: "+27 31 789 0123",
+                email: "bookings@djkamo.co.za",
+                bio: "High-energy DJ bringing the perfect mix of Amapiano, House, Afrobeats, and international hits. Resident DJ at several Durban hotspots with professional sound equipment.",
+                experience: "6 years",
+                completedEvents: 156
+            },
+            {
+                id: 4,
+                name: "Sizani Beauty Studio",
+                category: "makeup",
+                service: "Professional Makeup Artist",
+                location: "pretoria",
+                locationText: "Pretoria, Gauteng",
+                rating: 5.0,
+                reviews: 34,
+                hourlyRate: "R1,200/session",
+                image: "💄",
+                available: true,
+                verified: true,
+                portfolio: ["Bridal Makeup", "Fashion Shoots", "TV & Film", "Special Events"],
+                phone: "+27 12 345 6789",
+                email: "sizani@beautystudio.co.za",
+                bio: "Certified professional makeup artist with international training. Specializing in bridal looks that photograph beautifully. Featured makeup artist for SA Fashion Week.",
+                experience: "7 years",
+                completedEvents: 78
+            },
+            {
+                id: 5,
+                name: "Ubuntu Grand Venue",
+                category: "venues",
+                service: "Premium Event Venue",
+                location: "johannesburg",
+                locationText: "Sandton, Johannesburg",
+                rating: 4.6,
+                reviews: 112,
+                hourlyRate: "R3,500/day",
+                image: "🏛️",
+                available: true,
+                verified: true,
+                portfolio: ["Corporate Conferences", "Luxury Weddings", "Product Launches", "Awards Ceremonies"],
+                phone: "+27 11 234 5678",
+                email: "bookings@ubuntuvenue.co.za",
+                bio: "Modern 5-star venue with traditional African elegance. Capacity 50-400 guests. Full catering kitchen, AV equipment, and dedicated event coordinator included.",
+                experience: "10 years",
+                completedEvents: 230
+            },
+            {
+                id: 6,
+                name: "Chef Mandla Cuisine",
+                category: "chefs",
+                service: "Executive Private Chef",
+                location: "cape-town",
+                locationText: "Cape Town, Western Cape",
+                rating: 4.9,
+                reviews: 52,
+                hourlyRate: "R950/hour",
+                image: "👨‍🍳",
+                available: true,
+                verified: true,
+                portfolio: ["Fine Dining", "Traditional SA Cuisine", "International Fusion", "Corporate Catering"],
+                phone: "+27 21 567 8901",
+                email: "chef@mandlacuisine.co.za",
+                bio: "Award-winning executive chef trained in Paris and New York. Bringing restaurant-quality cuisine to private events. Specializes in contemporary South African flavors.",
+                experience: "15 years",
+                completedEvents: 89
+            },
+            {
+                id: 7,
+                name: "MC Sipho 'The Voice' Ndlovu",
+                category: "mcs",
+                service: "Professional Master of Ceremonies",
+                location: "johannesburg",
+                locationText: "Johannesburg, Gauteng",
+                rating: 4.8,
+                reviews: 76,
+                hourlyRate: "R1,100/event",
+                image: "🎤",
+                available: true,
+                verified: true,
+                portfolio: ["Wedding Ceremonies", "Corporate Events", "Award Shows", "Cultural Events"],
+                phone: "+27 83 456 7890",
+                email: "sipho@thevoicemc.co.za",
+                bio: "Professional MC and radio presenter with 9 years experience. Fluent in English, Zulu, Afrikaans. Known for keeping events flowing smoothly with humor and professionalism.",
+                experience: "9 years",
+                completedEvents: 134
+            },
+            {
+                id: 8,
+                name: "Rhythm Dance Company",
+                category: "musicians",
+                service: "Traditional Dance Troupe",
+                location: "durban",
+                locationText: "Durban, KwaZulu-Natal",
+                rating: 4.7,
+                reviews: 41,
+                hourlyRate: "R2,200/performance",
+                image: "💃",
+                available: true,
+                verified: true,
+                portfolio: ["Cultural Ceremonies", "Corporate Events", "Festivals", "Educational Shows"],
+                phone: "+27 31 234 5678",
+                email: "bookings@rhythmdance.co.za",
+                bio: "Professional Zulu dance troupe preserving and sharing South African culture. Perfect for corporate events, cultural celebrations, and tourist experiences.",
+                experience: "12 years",
+                completedEvents: 203
+            },
+            {
+                id: 9,
+                name: "Pro Audio Equipment Hire",
+                category: "equipment",
+                service: "Professional Sound & Lighting",
+                location: "cape-town",
+                locationText: "Cape Town, Western Cape",
+                rating: 4.6,
+                reviews: 98,
+                hourlyRate: "R650/day",
+                image: "🔊",
+                available: true,
+                verified: true,
+                portfolio: ["Concert Equipment", "Wedding Sound", "Corporate AV", "Stage Lighting"],
+                phone: "+27 21 789 0123",
+                email: "hire@proaudio.co.za",
+                bio: "Professional grade sound and lighting equipment with qualified technicians. Serving Cape Town and surrounds for over 8 years. Setup and breakdown included.",
+                experience: "8 years",
+                completedEvents: 187
+            },
+            {
+                id: 10,
+                name: "Comedian Jabu 'Laughter' Mthembu",
+                category: "musicians",
+                service: "Stand-up Comedian & Entertainer",
+                location: "johannesburg",
+                locationText: "Johannesburg, Gauteng",
+                rating: 4.9,
+                reviews: 67,
+                hourlyRate: "R1,800/show",
+                image: "😂",
+                available: true,
+                verified: true,
+                portfolio: ["Corporate Entertainment", "Wedding Reception", "Private Parties", "Comedy Clubs"],
+                phone: "+27 82 789 0123",
+                email: "bookings@jabulaughs.co.za",
+                bio: "Professional stand-up comedian featured on Comedy Central Africa. Clean, corporate-friendly humor perfect for events. Customizes material for each audience.",
+                experience: "11 years",
+                completedEvents: 145
+            }
+        ];
+
+        const categories = [
+            { id: 'all', name: 'All Services', icon: '👥' },
+            { id: 'musicians', name: 'Musicians', icon: '🎵' },
+            { id: 'mcs', name: 'MCs', icon: '🎤' },
+            { id: 'organizers', name: 'Event Organizers', icon: '📅' },
+            { id: 'makeup', name: 'Makeup Artists', icon: '💄' },
+            { id: 'djs', name: 'DJs', icon: '🎧' },
+            { id: 'chefs', name: 'Chefs', icon: '👨‍🍳' },
+            { id: 'venues', name: 'Venues', icon: '🏛️' },
+            { id: 'equipment', name: 'Equipment Hire', icon: '📷' }
+        ];
+
+        const locations = [
+            { id: 'all', name: 'All Locations' },
+            { id: 'johannesburg', name: 'Johannesburg' },
+            { id: 'cape-town', name: 'Cape Town' },
+            { id: 'durban', name: 'Durban' },
+            { id: 'pretoria', name: 'Pretoria' },
+            { id: 'port-elizabeth', name: 'Port Elizabeth' },
+            { id: 'bloemfontein', name: 'Bloemfontein' }
+        ];
+
+        // App state
+        let state = {
+            activeView: 'browse',
+            selectedCategory: 'all',
+            searchTerm: '',
+            selectedLocation: 'all',
+            selectedDate: '',
+            favorites: [],
+            showContactModal: null
+        };
+
+        // Utility functions
+        function toggleFavorite(personId) {
+            if (state.favorites.includes(personId)) {
+                state.favorites = state.favorites.filter(id => id !== personId);
+            } else {
+                state.favorites.push(personId);
+            }
+            render();
+        }
+
+        function filterPeople() {
+            return eventPeople.filter(person => {
+                const matchesCategory = state.selectedCategory === 'all' || person.category === state.selectedCategory;
+                const matchesSearch = person.name.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
+                                     person.service.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
+                                     person.locationText.toLowerCase().includes(state.searchTerm.toLowerCase());
+                const matchesLocation = state.selectedLocation === 'all' || person.location === state.selectedLocation;
+                return matchesCategory && matchesSearch && matchesLocation;
+            });
+        }
+
+        function showContactModal(person) {
+            state.showContactModal = person;
+            render();
+        }
+
+        function closeContactModal() {
+            state.showContactModal = null;
+            render();
+        }
+
+        function handleContact(person, method) {
+            if (method === 'book') {
+                showContactModal(person);
+            } else if (method === 'phone') {
+                window.open(`tel:${person.phone}`);
+            } else if (method === 'email') {
+                window.open(`mailto:${person.email}?subject=Event Inquiry from SA Event Connect`);
+            }
+        }
+
+        // Render functions
+        function renderHeader() {
+            return `
+                <div class="gradient-bg text-white shadow-lg">
+                    <div class="max-w-7xl mx-auto px-4 py-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h1 class="text-3xl font-bold">SA Event Connect</h1>
+                                <p class="text-orange-100 text-lg">South Africa's Premier Event Professional Platform</p>
+                                <div class="flex items-center mt-2 text-orange-100">
+                                    <span class="text-green-400 mr-2">✓</span>
+                                    <span class="text-sm">Over 500+ Verified Professionals | 10,000+ Successful Events</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-4xl mb-2">🇿🇦</div>
+                                <div class="text-orange-100 text-sm">Proudly South African</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderStatsBar() {
+            return `
+                <div class="bg-white shadow-sm py-3">
+                    <div class="max-w-7xl mx-auto px-4">
+                        <div class="flex justify-center space-x-8 text-center">
+                            <div>
+                                <div class="text-2xl font-bold text-red-600">500+</div>
+                                <div class="text-sm text-gray-600">Professionals</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-red-600">10,000+</div>
+                                <div class="text-sm text-gray-600">Events</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-red-600">9 Cities</div>
+                                <div class="text-sm text-gray-600">Across SA</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-red-600">4.8★</div>
+                                <div class="text-sm text-gray-600">Average Rating</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderNavigation() {
+            return `
+                <div class="bg-white shadow-sm">
+                    <div class="max-w-7xl mx-auto px-4">
+                        <div class="flex space-x-8 py-4">
+                            <button onclick="changeView('browse')" class="font-medium transition-colors flex items-center ${
+                                state.activeView === 'browse' 
+                                    ? 'text-red-600 border-b-2 border-red-600' 
+                                    : 'text-gray-600 hover:text-red-600'
+                            }">
+                                🔍 Browse Professionals
+                            </button>
+                            <button onclick="changeView('favorites')" class="font-medium transition-colors flex items-center ${
+                                state.activeView === 'favorites' 
+                                    ? 'text-red-600 border-b-2 border-red-600' 
+                                    : 'text-gray-600 hover:text-red-600'
+                            }">
+                                ❤️ My Favorites (${state.favorites.length})
+                            </button>
+                            <button onclick="changeView('post-job')" class="font-medium transition-colors flex items-center ${
+                                state.activeView === 'post-job' 
+                                    ? 'text-red-600 border-b-2 border-red-600' 
+                                    : 'text-gray-600 hover:text-red-600'
+                            }">
+                                📅 Post Your Event
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSearchFilters() {
+            return `
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <div class="grid lg:grid-cols-4 md:grid-cols-2 gap-4">
+                        <div class="relative">
+                            <span class="absolute left-3 top-3 text-gray-400">🔍</span>
+                            <input
+                                type="text"
+                                placeholder="Search professionals, services..."
+                                value="${state.searchTerm}"
+                                onchange="updateSearchTerm(this.value)"
+                                class="pl-10 w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                            />
+                        </div>
+                        
+                        <div class="relative">
+                            <span class="absolute left-3 top-3 text-gray-400">📍</span>
+                            <select
+                                value="${state.selectedLocation}"
+                                onchange="updateLocation(this.value)"
+                                class="pl-10 w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent appearance-none"
+                            >
+                                ${locations.map(loc => `<option value="${loc.id}">${loc.name}</option>`).join('')}
+                            </select>
+                        </div>
+
+                        <div class="relative">
+                            <span class="absolute left-3 top-3 text-gray-400">📅</span>
+                            <input
+                                type="date"
+                                value="${state.selectedDate}"
+                                onchange="updateDate(this.value)"
+                                class="pl-10 w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                            />
+                        </div>
+
+                        <select
+                            value="${state.selectedCategory}"
+                            onchange="updateCategory(this.value)"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                        >
+                            ${categories.map(cat => `<option value="${cat.id}">${cat.name}</option>`).join('')}
+                        </select>
+                    </div>
+
+                    <div class="mt-4 text-sm text-gray-600">
+                        Showing ${filterPeople().length} professionals ${state.selectedLocation !== 'all' ? `in ${locations.find(l => l.id === state.selectedLocation)?.name}` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCategoryPills() {
+            return `
+                <div class="flex flex-wrap gap-3 mb-6">
+                    ${categories.map(cat => `
+                        <button
+                            onclick="updateCategory('${cat.id}')"
+                            class="flex items-center px-4 py-2 rounded-full transition-all shadow-sm hover-lift ${
+                                state.selectedCategory === cat.id
+                                    ? 'bg-red-500 text-white shadow-md'
+                                    : 'bg-white text-gray-600 hover:bg-red-50 hover:text-red-600'
+                            }"
+                        >
+                            <span class="mr-2">${cat.icon}</span>
+                            ${cat.name}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderProfessionalCards() {
+            const filteredPeople = filterPeople();
+            
+            if (filteredPeople.length === 0) {
+                return `
+                    <div class="text-center py-12 bg-white rounded-xl">
+                        <div class="text-6xl mb-4">🔍</div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">No professionals found</h3>
+                        <p class="text-gray-500">Try adjusting your search or filters</p>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="grid lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    ${filteredPeople.map(person => `
+                        <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden hover-lift fade-in">
+                            <div class="p-6">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div class="flex items-center">
+                                        <div class="text-4xl mr-4">${person.image}</div>
+                                        <div>
+                                            <div class="flex items-center mb-1">
+                                                <h3 class="font-bold text-lg text-gray-900">${person.name}</h3>
+                                                ${person.verified ? '<span class="text-blue-500 ml-2" title="Verified Professional">✓</span>' : ''}
+                                            </div>
+                                            <p class="text-red-600 font-semibold">${person.service}</p>
+                                            <p class="text-gray-500 text-sm flex items-center mt-1">
+                                                📍 ${person.locationText}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex flex-col items-end">
+                                        <button
+                                            onclick="toggleFavorite(${person.id})"
+                                            class="p-2 rounded-full transition-colors ${
+                                                state.favorites.includes(person.id)
+                                                    ? 'text-red-500 bg-red-50'
+                                                    : 'text-gray-400 hover:text-red-500 hover:bg-red-50'
+                                            }"
+                                        >
+                                            ${state.favorites.includes(person.id) ? '❤️' : '🤍'}
+                                        </button>
+                                        
+                                        <div class="mt-2 px-3 py-1 rounded-full text-xs font-medium ${
+                                            person.available 
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-red-100 text-red-800'
+                                        }">
+                                            ${person.available ? 'Available' : 'Busy'}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center">
+                                        <div class="flex items-center text-yellow-400 mr-3">
+                                            ⭐
+                                            <span class="text-gray-900 font-semibold ml-1">${person.rating}</span>
+                                        </div>
+                                        <span class="text-gray-500 text-sm">(${person.reviews} reviews)</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-bold text-green-600 text-lg">${person.hourlyRate}</div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center text-sm text-gray-600 mb-3">
+                                    <span class="mr-1">🏆</span>
+                                    <span>${person.experience} experience • ${person.completedEvents} events</span>
+                                </div>
+
+                                <p class="text-gray-600 text-sm mb-4 line-clamp-2">${person.bio}</p>
+
+                                <div class="flex flex-wrap gap-1 mb-4">
+                                    ${person.portfolio.slice(0, 3).map(item => `
+                                        <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">${item}</span>
+                                    `).join('')}
+                                    ${person.portfolio.length > 3 ? `<span class="text-gray-500 text-xs px-2 py-1">+${person.portfolio.length - 3} more</span>` : ''}
+                                </div>
+
+                                <div class="flex space-x-2">
+                                    <button
+                                        onclick="handleContact(${person.id}, 'phone')"
+                                        class="flex-1 bg-green-500 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-600 transition-colors flex items-center justify-center"
+                                    >
+                                        📞 Call
+                                    </button>
+                                    <button
+                                        onclick="handleContact(${person.id}, 'email')"
+                                        class="flex-1 bg-blue-500 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors flex items-center justify-center"
+                                    >
+                                        ✉️ Email
+                                    </button>
+                                    <button
+                                        onclick="handleContact(${person.id}, 'book')"
+                                        class="flex-1 bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition-colors"
+                                    >
+                                        Book Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderContactModal() {
+            if (!state.showContactModal) return '';
+            
+            const person = state.showContactModal;
+            return `
+                <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div class="bg-white rounded-xl max-w-md w-full p-6">
+                        <h3 class="text-xl font-bold mb-4">Book ${person.name}</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Event Date</label>
+                                <input type="date" class="w-full border rounded-lg px-3 py-2" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Event Type</label>
+                                <select class="w-full border rounded-lg px-3 py-2">
+                                    <option>Wedding</option>
+                                    <option>Corporate Event</option>
+                                    <option>Birthday Party</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Your Message</label>
+                                <textarea rows="3" placeholder="Tell us about your event..." class="w-full border rounded-lg px-3 py-2"></textarea>
+                            </div>
+                            <div class="flex space-x-3">
+                                <button 
+                                    onclick="closeContactModal()"
+                                    class="flex-1 border border-gray-300 py-2 rounded-lg hover:bg-gray-50"
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    onclick="sendBookingRequest('${person.name}')"
+                                    class="flex-1 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600"
+                                >
+                                    Send Request
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFooter() {
+            return `
+                <footer class="bg-gray-900 text-white mt-16">
+                    <div class="max-w-7xl mx-auto px-4 py-8">
+                        <div class="grid md:grid-cols-4 gap-8">
+                            <div>
+                                <h3 class="text-xl font-bold text-red-400 mb-4">SA Event Connect</h3>
+                                <p class="text-gray-300 text-sm">
+                                    Connecting South Africa's best event professionals with clients who need them.
+                                </p>
+                                <div class="flex space-x-4 mt-4">
+                                    <div class="text-2xl">📱</div>
+                                    <div class="text-2xl">💻</div>
+                                    <div class="text-2xl">📧</div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-semibold mb-3">For Professionals</h4>
+                                <ul class="space-y-2 text-sm text-gray-300">
+                                    <li>Join as Professional</li>
+                                    <li>Success Stories</li>
+                                    <li>Professional Resources</li>
+                                    <li>Pricing Plans</li>
+                                </ul>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-semibold mb-3">For Clients</h4>
+                                <ul class="space-y-2 text-sm text-gray-300">
+                                    <li>How It Works</li>
+                                    <li>Event Planning Guide</li>
+                                    <li>Customer Reviews</li>
+                                    <li>Safety & Security</li>
+                                </ul>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-semibold mb-3">Support</h4>
+                                <ul class="space-y-2 text-sm text-gray-300">
+                                    <li>Help Center</li>
+                                    <li>Contact Us</li>
+                                    <li>Terms of Service</li>
+                                    <li>Privacy Policy</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-400">
+                            <p>&copy; 2024 SA Event Connect. Made with ❤️ in South Africa.</p>
+                        </div>
+                    </div>
+                </footer>
+            `;
+        }
+
+        function renderFavorites() {
+            if (state.favorites.length === 0) {
+                return `
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h2 class="text-2xl font-bold mb-6 flex items-center">
+                            ❤️ My Favorite Professionals
+                        </h2>
+                        <div class="text-center py-12 text-gray-500">
+                            <div class="text-6xl mb-4">💔</div>
+                            <p class="text-lg mb-2">No favorites yet!</p>
+                            <p>Heart some professionals while browsing to see them here.</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const favoritePeople = eventPeople.filter(p => state.favorites.includes(p.id));
+            
+            return `
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center">
+                        ❤️ My Favorite Professionals
+                    </h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        ${favoritePeople.map(person => `
+                            <div class="border-2 border-red-100 rounded-lg p-4 flex items-center hover:border-red-200 transition-colors">
+                                <div class="text-2xl mr-4">${person.image}</div>
+                                <div class="flex-1">
+                                    <div class="flex items-center mb-1">
+                                        <h4 class="font-semibold">${person.name}</h4>
+                                        ${person.verified ? '<span class="text-blue-500 ml-2">✓</span>' : ''}
+                                    </div>
+                                    <p class="text-red-600 text-sm font-medium">${person.service}</p>
+                                    <p class="text-gray-500 text-sm">${person.locationText}</p>
+                                    <div class="flex items-center mt-1">
+                                        <span class="text-yellow-400 mr-1">⭐</span>
+                                        <span class="text-sm font-medium">${person.rating}</span>
+                                        <span class="text-gray-400 text-sm ml-2">${person.hourlyRate}</span>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button
+                                        onclick="handleContact(${person.id}, 'book')"
+                                        class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                                    >
+                                        Book
+                                    </button>
+                                    <button
+                                        onclick="toggleFavorite(${person.id})"
+                                        class="text-red-500 p-2 hover:bg-red-50 rounded"
+                                    >
+                                        ❤️
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPostJob() {
+            return `
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center">
+                        📅 Post Your Event & Get Quotes
+                    </h2>
+                    
+                    <div class="bg-gradient-to-r from-red-50 to-orange-50 rounded-lg p-4 mb-6">
+                        <h3 class="font-semibold text-red-800 mb-2">How it works:</h3>
+                        <div class="grid md:grid-cols-3 gap-4 text-sm">
+                            <div class="flex items-center">
+                                <div class="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-2">1</div>
+                                <span>Describe your event</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-2">2</div>
+                                <span>Get matched with professionals</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-2">3</div>
+                                <span>Compare quotes & book</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Event Type *</label>
+                            <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500">
+                                <option value="">Select event type...</option>
+                                <option>Wedding</option>
+                                <option>Corporate Event</option>
+                                <option>Birthday Party</option>
+                                <option>Anniversary</option>
+                                <option>Baby Shower</option>
+                                <option>Festival/Concert</option>
+                                <option>Product Launch</option>
+                                <option>Conference</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Event Date *</label>
+                            <input type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500" />
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Location *</label>
+                            <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500">
+                                <option value="">Select location...</option>
+                                <option>Johannesburg, Gauteng</option>
+                                <option>Cape Town, Western Cape</option>
+                                <option>Durban, KwaZulu-Natal</option>
+                                <option>Pretoria, Gauteng</option>
+                                <option>Port Elizabeth, Eastern Cape</option>
+                                <option>Bloemfontein, Free State</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Expected Guests</label>
+                            <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500">
+                                <option>Under 50</option>
+                                <option>50 - 100</option>
+                                <option>100 - 200</option>
+                                <option>200 - 500</option>
+                                <option>500+</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Budget Range</label>
+                            <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500">
+                                <option>Under R5,000</option>
+                                <option>R5,000 - R15,000</option>
+                                <option>R15,000 - R35,000</option>
+                                <option>R35,000 - R75,000</option>
+                                <option>R75,000+</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Your Contact</label>
+                            <input type="text" placeholder="Your name" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 mb-2" />
+                            <input type="email" placeholder="Your email" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 mb-2" />
+                            <input type="tel" placeholder="Your phone number" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500" />
+                        </div>
+                        
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Services Needed</label>
+                            <div class="grid grid-cols-3 md:grid-cols-4 gap-3">
+                                ${categories.slice(1).map(cat => `
+                                    <label class="flex items-center p-2 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                                        <input type="checkbox" class="mr-2 text-red-500" />
+                                        <span class="mr-2">${cat.icon}</span>
+                                        <span class="text-sm">${cat.name}</span>
+                                    </label>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Event Description</label>
+                            <textarea 
+                                rows="4" 
+                                placeholder="Tell us about your event - theme, style, special requirements, etc."
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500"
+                            ></textarea>
+                        </div>
+                        
+                        <div class="md:col-span-2">
+                            <div class="flex items-center mb-4">
+                                <input type="checkbox" class="mr-2" />
+                                <span class="text-sm text-gray-600">I agree to the Terms of Service and Privacy Policy</span>
+                            </div>
+                            
+                            <button 
+                                type="button"
+                                onclick="postEvent()"
+                                class="w-full bg-gradient-to-r from-red-500 to-orange-500 text-white py-3 rounded-lg font-semibold hover:from-red-600 hover:to-orange-600 transition-all duration-300 shadow-lg"
+                            >
+                                Post Event & Get Free Quotes
+                            </button>
+                            
+                            <p class="text-center text-sm text-gray-500 mt-2">
+                                100% Free • Get up to 5 quotes • No commitment
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            `;
+        }
+
+        // Event handlers
+        function changeView(view) {
+            state.activeView = view;
+            render();
+        }
+
+        function updateSearchTerm(term) {
+            state.searchTerm = term;
+            render();
+        }
+
+        function updateLocation(location) {
+            state.selectedLocation = location;
+            render();
+        }
+
+        function updateDate(date) {
+            state.selectedDate = date;
+            render();
+        }
+
+        function updateCategory(category) {
+            state.selectedCategory = category;
+            render();
+        }
+
+        function handleContact(personId, method) {
+            const person = eventPeople.find(p => p.id === personId);
+            if (method === 'book') {
+                showContactModal(person);
+            } else if (method === 'phone') {
+                window.open(`tel:${person.phone}`);
+            } else if (method === 'email') {
+                window.open(`mailto:${person.email}?subject=Event Inquiry from SA Event Connect`);
+            }
+        }
+
+        function sendBookingRequest(personName) {
+            alert(`Booking request sent to ${personName}! They'll contact you within 24 hours.`);
+            closeContactModal();
+        }
+
+        function postEvent() {
+            alert('Event posted successfully! You\'ll receive quotes from matching professionals within 24 hours.');
+        }
+
+        // Main render function
+        function render() {
+            const app = document.getElementById('app');
+            
+            let content = '';
+            
+            if (state.activeView === 'browse') {
+                content = `
+                    ${renderSearchFilters()}
+                    ${renderCategoryPills()}
+                    ${renderProfessionalCards()}
+                `;
+            } else if (state.activeView === 'favorites') {
+                content = renderFavorites();
+            } else if (state.activeView === 'post-job') {
+                content = renderPostJob();
+            }
+            
+            app.innerHTML = `
+                ${renderHeader()}
+                ${renderStatsBar()}
+                ${renderNavigation()}
+                
+                <div class="max-w-7xl mx-auto px-4 py-6">
+                    ${content}
+                </div>
+                
+                ${renderContactModal()}
+                ${renderFooter()}
+            `;
+        }
+
+        // Initialize the app
+        render();
+    </script>
+</body>
+</html>
